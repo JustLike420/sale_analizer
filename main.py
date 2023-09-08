@@ -69,12 +69,14 @@ class SellWin:
     @staticmethod
     def check_data(data: dict):
         new_data = {}
-
-        with open('data.json', 'r', encoding='utf-8') as file:
-            json_data = json.load(file)
-            """
-            {1: {name, price}, 2: {name, price}
-            """
+        if os.path.exists('data.json'):
+            with open('data.json', 'r', encoding='utf-8') as file:
+                json_data = json.load(file)
+                """
+                {1: {name, price}, 2: {name, price}
+                """
+        else:
+            json_data = {}
 
         for _id, info in data.items():
             notification_type = None
