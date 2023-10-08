@@ -27,6 +27,7 @@ class Notification:
             f'https://api.telegram.org/bot{self.bot_token}/sendMessage'
             f'?chat_id={self.chat_id}&text={self.sale_type}'
         )
+        print(f"send {self.sale_type}")
 
 
 class SellWin:
@@ -55,6 +56,7 @@ class SellWin:
                 self._token = self.get_token()
                 return self.get_all_data()
             else:
+                print(f"Проверяю странцу: {page}")
                 data = response.json()
                 if len(data['rows']) != 0:
                     for element in data['rows']:
@@ -68,6 +70,7 @@ class SellWin:
 
     @staticmethod
     def check_data(data: dict):
+        print("Сверяю товары")
         new_data = {}
         if os.path.exists('data.json'):
             with open('data.json', 'r', encoding='utf-8') as file:
@@ -94,12 +97,18 @@ class SellWin:
 
         with open('data.json', 'w', encoding='utf-8') as file:
             json.dump(data, file)
+        print("Сверка окончена, ожидание 1 минута")
 
 
 if __name__ == '__main__':
     print('~~~START~~~')
     sellWin = SellWin()
     while True:
-        data = sellWin.get_all_data()
-        sellWin.check_data(data)
+        try:
+            print("Запускаю парсинг")
+            data = sellWin.get_all_data()
+            print(f"Найдено {len(data)} товаров")
+            sellWin.check_data(data)
+        except Exception as e:
+            print(f"Ошибка {e}")
         time.sleep(60)
